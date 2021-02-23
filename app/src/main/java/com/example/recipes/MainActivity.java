@@ -33,12 +33,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String user= username.getText().toString();
             String pass= password.getText().toString();
             //check username and password
-            //move to homescreen
+            Intent intent = new Intent(this, HomapageActivity.class);
+            startActivity(intent);
         }
 
         if(btnsignup == v){
-            Intent intent = new Intent(this, RegisterActivity.class);
-            startActivity(intent);
+//            Intent intent = new Intent(this, RegisterActivity.class);
+//            startActivity(intent);
         }
 
         if (btnforgot==v){

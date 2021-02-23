@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="שם המתכון"
+        android:paddingLeft="100dp"
+        android:layout_gravity="center"
+        android:id="@+id/recipe_name"
+        />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="זמן הכנה (בדקות)"
+        android:layout_gravity="center"
+        android:paddingLeft="50dp"
+        android:id="@+id/preparation_time"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:text="רמת קושי" />
+
+    <NumberPicker
+        android:id="@+id/difficulty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ingredients_list_view"
+        >
+
+    </ListView>
+
+
+
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="50dp"
+        android:paddingLeft="150dp"
+        android:hint="אופן ההכנה"
+        android:layout_gravity="center"
+        android:id="@+id/preparation_method"
+        />
+
+
+
+    //image
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="הוסף מתכון"
+        android:layout_marginLeft="150dp"
+        android:id="@+id/btnadd_dialog"
+        />
+
+
+
+
+
+
+</LinearLayout>
