@@ -3,7 +3,20 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:id="@+id/big_linear_layout_dialog">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scroll_view_dialog"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:id="@+id/small_linear_layout_dialog"
+            >
 
     <EditText
         android:layout_width="wrap_content"
@@ -36,13 +49,80 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center" />
 
-    <ListView
+    //ingredients list
+    <TableLayout
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:id="@+id/table_layout_ingredients"
+        >
+        <TableRow
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            >
+            <EditText
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="100dp"
+                android:hint="כמות"
+                android:paddingLeft="80dp"
+                />
+
+            <EditText
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:paddingLeft="80dp"
+                android:hint="מצרך"
+                />
+        </TableRow>
+        <TableRow
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            >
+            <EditText
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="100dp"
+                android:hint="כמות"
+                android:paddingLeft="80dp"
+                />
+
+            <EditText
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:paddingLeft="80dp"
+                android:hint="מצרך"
+                />
+        </TableRow>
+        <TableRow
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            >
+            <EditText
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="100dp"
+                android:hint="כמות"
+                android:paddingLeft="80dp"
+                />
+
+            <EditText
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:paddingLeft="80dp"
+                android:hint="מצרך"
+                />
+        </TableRow>
+
+    </TableLayout>
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/ingredients_list_view"
-        >
-
-    </ListView>
+        android:text="הוסף שורה"
+        android:id="@+id/btn_add_ingredients_row"
+        />
 
 
 
@@ -61,13 +141,20 @@
 
     //image
 
+
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="הוסף מתכון"
         android:layout_marginLeft="150dp"
-        android:id="@+id/btnadd_dialog"
+        android:id="@+id/btn_add_dialog"
         />
+
+        </LinearLayout>
+
+
+    </ScrollView>
 
 
 

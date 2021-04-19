@@ -4,18 +4,20 @@ import android.graphics.Bitmap;
 import android.media.Image;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Recipe {
     private String recipeName;
     private int time;
     private int difficulty;
     private Bitmap image;
-    private ArrayList<String> ingredients;
+    private Map<String, String> ingredients;
     private String preparations;
 
 
     //constractor
-    public Recipe(String recipeName, int time, int difficulty, Bitmap image, ArrayList<String> ingredients, String preparations) {
+    public Recipe(String recipeName, int time, int difficulty, Bitmap image, Map<String, String> ingredients, String preparations) {
         this.recipeName = recipeName;
         this.time = time;
         this.difficulty = difficulty;
@@ -58,11 +60,11 @@ public class Recipe {
         this.image = image;
     }
 
-    public ArrayList<String> getIngredients() {
+    public Map<String, String> getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(ArrayList<String> ingredients) {
+    public void setIngredients(Map<String, String> ingredients) {
         this.ingredients = ingredients;
     }
 

@@ -8,10 +8,18 @@
     tools:context=".RecipespageActivity">
 
     <ListView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/lv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/recipes_list_view"
     >
 
     </ListView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="hi"
+        android:textSize="100dp"
+        android:id="@+id/text_view_test"
+        />
 </LinearLayout>

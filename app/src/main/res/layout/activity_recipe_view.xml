@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RecipeViewActivity"
+    android:id="@+id/recipe_show_big_ll">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/recipe_show_scroll_view"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:id="@+id/recipe_show_small_ll"
+            >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textSize="30dp"
+            android:id="@+id/recipe_name_tv"
+            android:text="שם המתכון"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:textSize="15dp"
+            android:layout_marginTop="10dp"
+            android:id="@+id/duration_tv"
+            android:text="זמן הכנה - 15 דקות"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:textSize="15dp"
+            android:layout_marginTop="10dp"
+            android:id="@+id/difficulty_tv"
+            android:text="רמת קושי-3"
+            />
+
+        <TableLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:id="@+id/table_layout_ingredients_show"
+            >
+        </TableLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/preparation_method_tv"
+            android:layout_gravity="right"
+            android:layout_marginTop="10dp"
+            android:text="פה יהיה כתוב איך מכינים את המתכון"
+            />
+
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
