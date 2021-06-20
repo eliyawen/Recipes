@@ -10,11 +10,11 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="UserName"
+        android:hint="EmailAdress"
         android:paddingRight="100dp"
         android:layout_gravity="center"
         android:layout_marginTop="150dp"
-        android:id="@+id/username"
+        android:id="@+id/etEmailLogin"
         />
 
     <EditText
@@ -25,8 +25,15 @@
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
         android:inputType="numberPassword"
-        android:id="@+id/password"
+        android:id="@+id/etPasswordLogin"
         />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvLogin"
+        />
+
 
     <Button
         android:layout_width="wrap_content"
@@ -36,22 +43,24 @@
         android:layout_marginTop="30dp"
         android:id="@+id/btnsignin"
         />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="register"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:id="@+id/btnsignup"
+        />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="forgot password?"
         android:layout_gravity="center"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="150dp"
         android:id="@+id/btnforgot"
         />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Don't have a account?"
-        android:layout_gravity="center"
-        android:layout_marginTop="150dp"
-        android:id="@+id/btnsignup"
-        />
+
 
 </LinearLayout>

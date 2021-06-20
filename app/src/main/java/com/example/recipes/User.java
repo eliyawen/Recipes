@@ -3,18 +3,28 @@ package com.example.recipes;
 import java.util.ArrayList;
 
 public class User {
-    private ArrayList<Category> categoryList;
+    private ArrayList<Recipe> RecipesList;
+    private String password;
 
 
-    public User(ArrayList<Category> categoryList) {
-        this.categoryList = categoryList;
-        Category Csalad = new Category("salad");
-        Category Cmain = new Category("main");
-        Category Cpastry = new Category("pastry");
-        Category Cdessert = new Category("dessert");
-        categoryList.add(Csalad);
-        categoryList.add(Cmain);
-        categoryList.add(Cpastry);
-        categoryList.add(Cdessert);
+    public User(ArrayList<Recipe> recipesList, String password) {
+        RecipesList = recipesList;
+        this.password = password;
+    }
+
+    public ArrayList<Recipe> getRecipesList() {
+        return RecipesList;
+    }
+
+    public void setRecipesList(ArrayList<Recipe> recipesList) {
+        RecipesList = recipesList;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

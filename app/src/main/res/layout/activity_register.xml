@@ -8,7 +8,7 @@
     tools:context=".RegisterActivity">
 
     <EditText
-        android:id="@+id/emailadress"
+        android:id="@+id/etRegisterEmailadress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -16,17 +16,10 @@
         android:hint="Email Adress"
         android:paddingRight="100dp" />
 
-    <EditText
-        android:id="@+id/name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:hint="Name"
-        android:paddingRight="160dp" />
+
 
     <EditText
-        android:id="@+id/password"
+        android:id="@+id/etRegisterpassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -36,7 +29,7 @@
         android:paddingRight="130dp" />
 
     <EditText
-        android:id="@+id/conpassword"
+        android:id="@+id/etRegisterConfirmpassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -52,5 +45,11 @@
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
         android:text="Sign up" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/regTv"
+        />
 
 </LinearLayout>

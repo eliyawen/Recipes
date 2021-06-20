@@ -1,5 +1,6 @@
 package com.example.recipes;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -7,24 +8,45 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.util.ArrayList;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private EditText emailadress, name, password, conpassword;
+    private EditText etRegisterEmailadress, etRegisterpassword, etRegisterConfirmpassword;
     private Button btnsignup;
+    private FirebaseAuth firebaseAuth;
+    private DatabaseReference databaseReference;
+    private FirebaseDatabase firebaseDatabase;
+    private TextView regTv;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        emailadress=findViewById(R.id.emailadress);
-        name=findViewById(R.id.name);
-        password=findViewById(R.id.password);
-        conpassword=findViewById(R.id.conpassword);
+        etRegisterEmailadress=findViewById(R.id.etRegisterEmailadress);
+        etRegisterpassword=findViewById(R.id.etRegisterpassword);
+        etRegisterConfirmpassword=findViewById(R.id.etRegisterConfirmpassword);
         btnsignup=findViewById(R.id.btnsignup);
         btnsignup.setOnClickListener(this);
+        regTv=findViewById(R.id.regTv);
+
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference("Users");
 
 
     }
@@ -32,18 +54,49 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View v) {
         if(v==btnsignup){
-            String email = emailadress.getText().toString();
-            String namestr =name.getText().toString();
-            String pass =password.getText().toString();
-            String conpass =conpassword.getText().toString();
-            if (!pass.equals(conpass)){
-                Snackbar.make(findViewById(android.R.id.content), "your password didnt match each other", Snackbar.LENGTH_SHORT).show();
-            }
-            else{
-                //put the name and password in the database
-                Intent intent = new Intent(this, HomapageActivity.class);
-                startActivity(intent);
-            }
+           register();
         }
+    }
+
+    public void register(){
+        String email = etRegisterEmailadress.getText().toString().trim();
+        String password =etRegisterpassword.getText().toString().trim();
+        String confirmpass =etRegisterConfirmpassword.getText().toString().trim();
+
+        if(!password.equals(confirmpass)){
+            regTv.setText("The password and the confirmPassword must be identical");
+            etRegisterpassword.setText("");
+            etRegisterConfirmpassword.setText("");
+            return;
+        }
+
+        if (password.length() < 5){
+           regTv.setText("The password must contains at least 5 charecters");
+            etRegisterpassword.setText("");
+            etRegisterConfirmpassword.setText("");
+            return;
+        }
+
+        firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    //sign in successfuly
+                    ArrayList<Recipe> arr = new ArrayList<Recipe>();
+                    User user = new User(arr,etRegisterpassword.getText().toString());
+                    databaseReference.child(firebaseAuth.getCurrentUser().getUid()).setValue(user);
+                    Intent intent = new Intent(RegisterActivity.this, HomapageActivity.class);
+                    startActivity(intent);
+
+                } else{
+                    //sign in faild
+                    regTv.setText("registration fails");
+                    return;
+                }
+            }
+        });
+
+
+
     }
 }

@@ -14,51 +14,7 @@
         android:layout_height="wrap_content"
         ></SearchView>
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="סלטים"
-        android:layout_gravity="center"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:paddingTop="15dp"
-        android:paddingBottom="15dp"
-        android:id="@+id/btn_salad"
-        />
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="עיקריות"
-        android:layout_gravity="center"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:paddingTop="15dp"
-        android:paddingBottom="15dp"
-        android:id="@+id/btn_main"
-        />
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="מאפים"
-        android:layout_gravity="center"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:paddingTop="15dp"
-        android:paddingBottom="15dp"
-        android:id="@+id/btn_pastry"
-        />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="קינוחים"
-        android:layout_gravity="center"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:paddingTop="15dp"
-        android:paddingBottom="15dp"
-        android:id="@+id/btn_dessert"
-        />
 
 </LinearLayout>
 

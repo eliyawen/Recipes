@@ -17,6 +17,10 @@ public class Recipe {
 
 
     //constractor
+    public Recipe(String recipeName){
+        this.recipeName = recipeName;
+    }
+
     public Recipe(String recipeName, int time, int difficulty, Bitmap image, Map<String, String> ingredients, String preparations) {
         this.recipeName = recipeName;
         this.time = time;
