@@ -129,9 +129,6 @@
         android:id="@+id/btn_add_ingredients_row"
         />
 
-
-
-
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -142,11 +139,12 @@
         android:id="@+id/preparation_method"
         />
 
-
-
-    //image
-
-
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="הוסף תמונה"
+        android:id="@+id/btn_add_image"
+        />
 
     <Button
         android:layout_width="wrap_content"

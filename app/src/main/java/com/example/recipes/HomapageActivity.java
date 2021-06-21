@@ -1,17 +1,26 @@
 package com.example.recipes;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.MimeTypeFilter;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.renderscript.Sampler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -24,6 +33,7 @@ import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,6 +42,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,11 +52,11 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
 
     private Dialog d;
     private EditText editTextRecipeName, editTextPreparationTime, editTextPreparation, editTextCategoryNameDialog;
-    private Button btnaddDialog, btnAddCategoryDialog;
+    private Button btnAddDialog, btnAddCategoryDialog;
     private LinearLayout linearLayout;
     private ListView ingredientsListView;
     //private TableLayout tableLayoutIngredients;
-    private Button btnAddIngredientsRow;
+    private Button btnAddIngredientsRow, btnAddImage;
     private TableLayout tableLayoutIngredients;
     private LinearLayout bigLlDialog, smallLlDialog;
     private ScrollView scrollViewDialog;
@@ -58,6 +69,10 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
     private User user;
     private ArrayList<String> categoryNameList;
     private Spinner categorySpinner;
+    private Recipe r;
+    private String categoryName;
+    private Uri imageUri;
+    private String imageString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,13 +94,28 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View v) {
 
+        if(v == btnAddImage){
+            Intent i =new Intent(Intent.ACTION_GET_CONTENT);
+            if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1000);
+            }
+            i.setType("image/*");
+            startActivityForResult(Intent.createChooser(i,"Choose Picture"),0);
+        }
+
         if(v == btnAddIngredientsRow) addIngredientsRowFunction();
-        if(v == btnaddDialog){
+
+        if(v == btnAddDialog){
+            //uploadTheImageToStorage
+            upload();
             //adding recipe to the category
-            Recipe recipe=new Recipe(editTextRecipeName.getText().toString());
-            addRecipeToCategory(recipe, categorySpinner.getSelectedItem().toString());
+            r=new Recipe(editTextRecipeName.getText().toString());
+            categoryName = categorySpinner.getSelectedItem().toString();
+            addRecipeToCategory();
             d.dismiss();
         }
+
         if(v == btnAddCategoryDialog){
             addCategoryButton(editTextCategoryNameDialog.getText().toString());
             d.dismiss();
@@ -101,14 +131,40 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    public void addRecipeToCategory(Recipe recipe, String categoryName){
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 0 && resultCode == Activity.RESULT_OK && data != null){
+            imageUri = data.getData();
+        }
+    }
+
+    public void upload(){
+        String key = System.currentTimeMillis() + "." + getFileExtension(imageUri);
+        storageReference.child(key).putFile(imageUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        imageString = taskSnapshot.getUploadSessionUri().toString();
+                        recipe.setImageUri(imageString);
+                    }
+                });
+    }
+
+    public String getFileExtension(Uri uri){
+        String cr = getContentResolver().getType(uri);
+        MimeTypeMap mtm = MimeTypeMap.getSingleton();
+        return mtm.getExtensionFromMimeType(cr);
+    }
+
+    public void addRecipeToCategory(){
         databaseReferenceCategories.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot d: snapshot.getChildren()) {
                     if(d.getValue(Category.class).getCategoryName().equals(categoryName)){
                         Category category= d.getValue(Category.class);
-                        category.addRecipe(recipe);
+                        category.addRecipe(r);
                         databaseReferenceCategories.setValue(category);
                     }
                 }
@@ -164,6 +220,8 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
         btn.setOnClickListener(this);
         //add the new category to the database
         ArrayList<Recipe> arr = new ArrayList<Recipe>();
+        Recipe rec = new Recipe("kkk");
+        arr.add(rec);
         Category category = new Category(categoryName,arr);
         databaseReferenceCategories.child(firebaseAuth.getCurrentUser().getUid()+System.currentTimeMillis()).setValue(category);
     }
@@ -243,7 +301,6 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot category: snapshot.getChildren()) {
-                    //Log.d("for",category.getValue(Category.class).getCategoryName());
                     categoryNameList.add(category.getValue(Category.class).getCategoryName());
                 }
 
@@ -264,8 +321,10 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
         btnAddIngredientsRow=d.findViewById(R.id.btn_add_ingredients_row);
         btnAddIngredientsRow.setOnClickListener(this);
         editTextPreparation = d.findViewById(R.id.preparation_method);
-        btnaddDialog = d.findViewById(R.id.btn_add_dialog);
-        btnaddDialog.setOnClickListener(this);
+        btnAddImage = d.findViewById(R.id.btn_add_image);
+        btnAddImage.setOnClickListener(this);
+        btnAddDialog = d.findViewById(R.id.btn_add_dialog);
+        btnAddDialog.setOnClickListener(this);
         d.show();
     }
 

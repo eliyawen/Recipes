@@ -6,6 +6,7 @@ public class User {
     private ArrayList<Recipe> RecipesList;
     private String password;
 
+    public User(){}
 
     public User(ArrayList<Recipe> recipesList, String password) {
         RecipesList = recipesList;

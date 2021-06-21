@@ -2,6 +2,7 @@ package com.example.recipes;
 
 import android.graphics.Bitmap;
 import android.media.Image;
+import android.net.Uri;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,21 +12,23 @@ public class Recipe {
     private String recipeName;
     private int time;
     private int difficulty;
-    private Bitmap image;
+    private String imageUri;
     private Map<String, String> ingredients;
     private String preparations;
 
 
     //constractor
-    public Recipe(String recipeName){
+    public Recipe(){}
+
+    public Recipe(String recipeName) {
         this.recipeName = recipeName;
     }
 
-    public Recipe(String recipeName, int time, int difficulty, Bitmap image, Map<String, String> ingredients, String preparations) {
+    public Recipe(String recipeName, int time, int difficulty, String imageUri, Map<String, String> ingredients, String preparations) {
         this.recipeName = recipeName;
         this.time = time;
         this.difficulty = difficulty;
-        this.image = image;
+        this.imageUri = imageUri;
         this.ingredients = ingredients;
         this.preparations = preparations;
     }
@@ -56,12 +59,12 @@ public class Recipe {
         this.difficulty = difficulty;
     }
 
-    public Bitmap getImage() {
-        return image;
+    public String  getImageUri() {
+        return imageUri;
     }
 
-    public void setImage(Bitmap image) {
-        this.image = image;
+    public void setImageUri(String imageUri) {
+        this.imageUri = imageUri;
     }
 
     public Map<String, String> getIngredients() {
