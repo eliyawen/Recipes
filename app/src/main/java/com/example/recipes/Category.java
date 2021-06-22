@@ -11,9 +11,11 @@ public class Category {
 
     public Category(){}
 
-    public Category(String categoryName, ArrayList<Recipe> recipes) {
+    public Category(String categoryName) {
         this.categoryName = categoryName;
-        this.recipes = recipes;
+        this.recipes = new ArrayList<Recipe>();
+        Recipe r = new Recipe("");
+        this.recipes.add(r);
     }
 
 
@@ -36,7 +38,7 @@ public class Category {
     }
 
     public void addRecipe(Recipe recipe){
-        recipes.add(recipe);
+        this.recipes.add(recipe);
     }
 }
     class sortByName implements Comparator<String>{

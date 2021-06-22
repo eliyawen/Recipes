@@ -73,6 +73,8 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
     private String categoryName;
     private Uri imageUri;
     private String imageString;
+    private NumberPicker numberPicker;
+    private String key;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +90,21 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
         databaseReferenceCategories = firebaseDatabase.getReference("PublicCategories");
         storageReference = FirebaseStorage.getInstance().getReference("Images");
 
-        //createCategoryButtons();
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1000);
+        }
+
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},1000);
+        }
+
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1000);
+        }
+        createCategoryButtons();
     }
 
     @Override
@@ -96,10 +112,6 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
 
         if(v == btnAddImage){
             Intent i =new Intent(Intent.ACTION_GET_CONTENT);
-            if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1000);
-            }
             i.setType("image/*");
             startActivityForResult(Intent.createChooser(i,"Choose Picture"),0);
         }
@@ -108,9 +120,14 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
 
         if(v == btnAddDialog){
             //uploadTheImageToStorage
-            upload();
+            //upload();
             //adding recipe to the category
-            r=new Recipe(editTextRecipeName.getText().toString());
+            String recipeName = editTextRecipeName.getText().toString();
+            String prepTime = editTextPreparationTime.getText().toString();
+            int dif = numberPicker.getValue();
+            //ingredients
+            String prep = editTextPreparation.getText().toString();
+            r=new Recipe(recipeName);
             categoryName = categorySpinner.getSelectedItem().toString();
             addRecipeToCategory();
             d.dismiss();
@@ -140,13 +157,12 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
     }
 
     public void upload(){
-        String key = System.currentTimeMillis() + "." + getFileExtension(imageUri);
+        key = System.currentTimeMillis() + "." + getFileExtension(imageUri);
         storageReference.child(key).putFile(imageUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         imageString = taskSnapshot.getUploadSessionUri().toString();
-                        recipe.setImageUri(imageString);
                     }
                 });
     }
@@ -158,14 +174,15 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
     }
 
     public void addRecipeToCategory(){
-        databaseReferenceCategories.addValueEventListener(new ValueEventListener() {
+        databaseReferenceCategories.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot d: snapshot.getChildren()) {
                     if(d.getValue(Category.class).getCategoryName().equals(categoryName)){
-                        Category category= d.getValue(Category.class);
+                        Category category = d.getValue(Category.class);
                         category.addRecipe(r);
-                        databaseReferenceCategories.setValue(category);
+                        //databaseReferenceCategories.child(d.getKey()).child(System.currentTimeMillis()+"").setValue(r);
+                        databaseReferenceCategories.child(d.getKey()).setValue(category);
                     }
                 }
             }
@@ -179,11 +196,23 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
 
     public void createCategoryButtons(){
         categoryNameList = new ArrayList<String>();
-        databaseReferenceCategories.addValueEventListener(new ValueEventListener() {
+        databaseReferenceCategories.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot category: snapshot.getChildren()){
                     categoryNameList.add(category.getValue(Category.class).getCategoryName());
+                }
+                for (int i=0;i<categoryNameList.size();i++){
+                    Button btn = new Button(HomapageActivity.this);
+                    LinearLayout.LayoutParams buttonLayout = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+                    buttonLayout.setMargins(30, 0, 30, 0);
+                    btn.setLayoutParams(buttonLayout);
+                    btn.setPadding(0,15,0,15);
+                    btn.setText(categoryNameList.get(i));
+                    linearLayout.addView(btn);
+                    linearLayout.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
+                    buttons.add(btn);
+                    btn.setOnClickListener(HomapageActivity.this);
                 }
             }
 
@@ -192,18 +221,7 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
 
             }
         });
-        for (int i=0;i<categoryNameList.size();i++){
-            Button btn = new Button(this);
-            LinearLayout.LayoutParams buttonLayout = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
-            buttonLayout.setMargins(30, 0, 30, 0);
-            btn.setLayoutParams(buttonLayout);
-            btn.setPadding(0,15,0,15);
-            btn.setText(categoryNameList.get(i));
-            linearLayout.addView(btn);
-            linearLayout.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
-            buttons.add(btn);
-            btn.setOnClickListener(this);
-        }
+
     }
 
     //add category button
@@ -219,11 +237,8 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
         buttons.add(btn);
         btn.setOnClickListener(this);
         //add the new category to the database
-        ArrayList<Recipe> arr = new ArrayList<Recipe>();
-        Recipe rec = new Recipe("kkk");
-        arr.add(rec);
-        Category category = new Category(categoryName,arr);
-        databaseReferenceCategories.child(firebaseAuth.getCurrentUser().getUid()+System.currentTimeMillis()).setValue(category);
+        Category category = new Category(categoryName);
+        databaseReferenceCategories.child(System.currentTimeMillis()+"").setValue(category);
     }
 
     //menu
@@ -274,7 +289,7 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
         d.setTitle("הוספת מתכון");
         editTextRecipeName = d.findViewById(R.id.recipe_name);
         editTextPreparationTime = d.findViewById(R.id.preparation_time);
-        NumberPicker numberPicker = d.findViewById(R.id.difficulty);
+        numberPicker = d.findViewById(R.id.difficulty);
         numberPicker.setMinValue(1);
         numberPicker.setMaxValue(5);
 

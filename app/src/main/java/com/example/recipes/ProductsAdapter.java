@@ -32,7 +32,7 @@ public class ProductsAdapter extends ArrayAdapter<Recipe> {
         ImageView recipeImage = convertView.findViewById(R.id.recipe_image);
 
         recipeName.setText(String.valueOf(recipe.getRecipeName()));
-        recipeImage.setImageBitmap(recipe.getImage());
+
 
         return convertView;
     }

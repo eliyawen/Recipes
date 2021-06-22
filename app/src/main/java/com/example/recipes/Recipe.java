@@ -10,9 +10,9 @@ import java.util.Map;
 
 public class Recipe {
     private String recipeName;
-    private int time;
+    private String time;
     private int difficulty;
-    private String imageUri;
+    private String imageString;
     private Map<String, String> ingredients;
     private String preparations;
 
@@ -24,16 +24,14 @@ public class Recipe {
         this.recipeName = recipeName;
     }
 
-    public Recipe(String recipeName, int time, int difficulty, String imageUri, Map<String, String> ingredients, String preparations) {
+    public Recipe(String recipeName, String time, int difficulty, String imageString, Map<String, String> ingredients, String preparations) {
         this.recipeName = recipeName;
         this.time = time;
         this.difficulty = difficulty;
-        this.imageUri = imageUri;
+        this.imageString = ;
         this.ingredients = ingredients;
         this.preparations = preparations;
     }
-
-    //geters and seters
 
     public String getRecipeName() {
         return recipeName;
@@ -43,11 +41,11 @@ public class Recipe {
         this.recipeName = recipeName;
     }
 
-    public int getTime() {
+    public String getTime() {
         return time;
     }
 
-    public void setTime(int time) {
+    public void setTime(String time) {
         this.time = time;
     }
 
@@ -59,12 +57,12 @@ public class Recipe {
         this.difficulty = difficulty;
     }
 
-    public String  getImageUri() {
-        return imageUri;
+    public String getImageString() {
+        return imageString;
     }
 
-    public void setImageUri(String imageUri) {
-        this.imageUri = imageUri;
+    public void setImageString(String imageString) {
+        this.imageString = imageString;
     }
 
     public Map<String, String> getIngredients() {
@@ -83,3 +81,5 @@ public class Recipe {
         this.preparations = preparations;
     }
 }
+
+
