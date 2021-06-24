@@ -7,19 +7,20 @@
     android:orientation="vertical"
     tools:context=".RecipespageActivity">
 
+    <SearchView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:queryHint="חפש מתכון"
+        android:iconifiedByDefault="false"
+        android:id="@+id/search_view"
+        />
+
     <ListView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:id="@+id/recipes_list_view"
     >
 
     </ListView>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="hi"
-        android:textSize="100dp"
-        android:id="@+id/text_view_test"
-        />
 </LinearLayout>

@@ -1,6 +1,7 @@
 package com.example.recipes;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,18 +11,31 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import java.util.List;
 
 public class ProductsAdapter extends ArrayAdapter<Recipe> {
     Context context;
     List<Recipe> recipes;
 
+    private StorageReference storageReference;
+
     public ProductsAdapter(@NonNull Context context, int resource, int textViewResourceId, @NonNull List<Recipe> recipes) {
         super(context, resource, textViewResourceId, recipes);
+
+        this.context=context;
+        this.recipes = recipes;
     }
 
 
     public View getView(int position, View convertView, ViewGroup parent){
+        storageReference = FirebaseStorage.getInstance().getReference("Images");
         Recipe recipe = getItem(position);
 
         if(convertView == null){
@@ -31,8 +45,15 @@ public class ProductsAdapter extends ArrayAdapter<Recipe> {
         TextView recipeName = convertView.findViewById(R.id.recipe_name_TextView);
         ImageView recipeImage = convertView.findViewById(R.id.recipe_image);
 
-        recipeName.setText(String.valueOf(recipe.getRecipeName()));
 
+        recipeName.setText(String.valueOf(recipe.getRecipeName()));
+        //image from storage
+        storageReference.child(recipe.getKey()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(context).load(uri).into(recipeImage);
+            }
+        });
 
         return convertView;
     }

@@ -8,11 +8,13 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.MimeTypeFilter;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.renderscript.Sampler;
@@ -47,15 +49,18 @@ import com.google.firebase.storage.UploadTask;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class HomapageActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
+     ActionBar actionBar;
     private Dialog d;
     private EditText editTextRecipeName, editTextPreparationTime, editTextPreparation, editTextCategoryNameDialog;
     private Button btnAddDialog, btnAddCategoryDialog;
     private LinearLayout linearLayout;
     private ListView ingredientsListView;
-    //private TableLayout tableLayoutIngredients;
     private Button btnAddIngredientsRow, btnAddImage;
     private TableLayout tableLayoutIngredients;
     private LinearLayout bigLlDialog, smallLlDialog;
@@ -75,12 +80,17 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
     private String imageString;
     private NumberPicker numberPicker;
     private String key;
+    private int keyCounter, valueCounter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homapage);
         linearLayout=findViewById(R.id.linearLayout);
+
+        keyCounter = 1;
+        valueCounter = 2;
+
 
         buttons= new ArrayList<Button>();
 
@@ -126,8 +136,16 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
             String prepTime = editTextPreparationTime.getText().toString();
             int dif = numberPicker.getValue();
             //ingredients
+            Map<String ,String> ingredients = new HashMap<String ,String>();
+            for (int i = 1;i<=valueCounter;i+=2){
+              EditText etKey = d.findViewById(i);
+              EditText etValue = d.findViewById(i+1);
+              ingredients.put(etKey.toString(),etValue.toString());
+            }
             String prep = editTextPreparation.getText().toString();
-            r=new Recipe(recipeName);
+            imageString = "1624369854167.jpg";
+            r = new Recipe(recipeName,prepTime,dif,imageString,ingredients,prep);
+            //r = new Recipe(recipeName,key);
             categoryName = categorySpinner.getSelectedItem().toString();
             addRecipeToCategory();
             d.dismiss();
@@ -199,8 +217,11 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
         databaseReferenceCategories.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot category: snapshot.getChildren()){
-                    categoryNameList.add(category.getValue(Category.class).getCategoryName());
+                for(DataSnapshot d: snapshot.getChildren()){
+                    if (d.getValue(Category.class).getCategoryName().length() < 20){
+                        categoryNameList.add(d.getValue(Category.class).getCategoryName());
+                    }
+
                 }
                 for (int i=0;i<categoryNameList.size();i++){
                     Button btn = new Button(HomapageActivity.this);
@@ -315,10 +336,11 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
         databaseReferenceCategories.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot category: snapshot.getChildren()) {
-                    categoryNameList.add(category.getValue(Category.class).getCategoryName());
+                for(DataSnapshot d: snapshot.getChildren()) {
+                    if(d.getValue(Category.class).getCategoryName().length() < 20){
+                        categoryNameList.add(d.getValue(Category.class).getCategoryName());
+                    }
                 }
-
 
                 Collections.sort(categoryNameList,new sortByName());
                 for (int i=0;i<categoryNameList.size();i++)
@@ -352,22 +374,29 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
         etItem.setHint("מצרך");
         etItem.setPadding(80,0,0,0);
         lp.setMargins(50,0,0,0);
+        etItem.generateViewId();
+        etItem.setId(keyCounter);
         etItem.setLayoutParams(lp);
 
         EditText etAmount = new EditText(this);
         etAmount.setHint("כמות");
         etAmount.setPadding(80,0,0,0);
         lp.setMargins(100,0,0,0);
+        etAmount.generateViewId();
+        etAmount.setId(valueCounter);
         etAmount.setLayoutParams(lp);
         tr.addView(etAmount);
         tr.addView(etItem);
         tableLayoutIngredients.addView(tr);
         smallLlDialog.removeView(tableLayoutIngredients);
-        smallLlDialog.addView(tableLayoutIngredients,4);
+        smallLlDialog.addView(tableLayoutIngredients,5);
         scrollViewDialog.removeAllViews();
         scrollViewDialog.addView(smallLlDialog);
         bigLlDialog.removeAllViews();
         bigLlDialog.addView(scrollViewDialog);
+
+        keyCounter+=2;
+        valueCounter+=2;
 
     }
 

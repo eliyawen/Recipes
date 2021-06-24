@@ -33,7 +33,7 @@
             android:layout_gravity="right"
             android:textSize="15dp"
             android:layout_marginTop="10dp"
-            android:id="@+id/duration_tv"
+            android:id="@+id/time_tv"
             android:text="זמן הכנה - 15 דקות"
             />
 
@@ -63,6 +63,14 @@
             android:layout_marginTop="10dp"
             android:text="פה יהיה כתוב איך מכינים את המתכון"
             />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/recipe_image_tv"
+                />
+
+
 
 
 

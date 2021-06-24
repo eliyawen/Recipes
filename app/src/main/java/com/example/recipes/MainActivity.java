@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -16,7 +17,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    private Button btnsignin, btnsignup, btnforgot;
+    private Button btnsignin, btnsignup;
     private EditText etEmailLogin, etPasswordLogin;
     private FirebaseAuth firebaseAuth;
     private TextView tvLogin;
@@ -29,10 +30,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         etPasswordLogin=findViewById(R.id.etPasswordLogin);
         btnsignin=findViewById(R.id.btnsignin);
         btnsignup=findViewById(R.id.btnsignup);
-        btnforgot=findViewById(R.id.btnforgot);
         btnsignin.setOnClickListener(this);
         btnsignup.setOnClickListener(this);
         tvLogin=findViewById(R.id.tvLogin);
+
+        btnsignin.setBackgroundColor(Color.BLUE);
+        btnsignup.setBackgroundColor(Color.BLUE);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -53,9 +56,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
            startActivity(intent);
         }
 
-        if (btnforgot==v){
-            //change password
-        }
     }
 
     public void login(){

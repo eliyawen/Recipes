@@ -12,25 +12,31 @@ public class Recipe {
     private String recipeName;
     private String time;
     private int difficulty;
-    private String imageString;
-    private Map<String, String> ingredients;
-    private String preparations;
+    private String key;
+    private String ingredients;
+    //private Map<String, String> ingredients;
+    private String preparationMethod;
 
 
     //constractor
     public Recipe(){}
 
+    public Recipe(String recipeName, String key){
+        this.recipeName= recipeName;
+        this.key=key;
+    }
+
     public Recipe(String recipeName) {
         this.recipeName = recipeName;
     }
 
-    public Recipe(String recipeName, String time, int difficulty, String imageString, Map<String, String> ingredients, String preparations) {
+    public Recipe(String recipeName, String time, int difficulty, String key, String ingredients, String preparationMethod) {
         this.recipeName = recipeName;
         this.time = time;
         this.difficulty = difficulty;
-        this.imageString = ;
+        this.key = key;
         this.ingredients = ingredients;
-        this.preparations = preparations;
+        this.preparationMethod = preparationMethod;
     }
 
     public String getRecipeName() {
@@ -57,28 +63,28 @@ public class Recipe {
         this.difficulty = difficulty;
     }
 
-    public String getImageString() {
-        return imageString;
+    public String getKey() {
+        return key;
     }
 
-    public void setImageString(String imageString) {
-        this.imageString = imageString;
+    public void setKey(String key) {
+        this.key = key;
     }
 
-    public Map<String, String> getIngredients() {
+    public String  getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(Map<String, String> ingredients) {
+    public void setIngredients(String  ingredients) {
         this.ingredients = ingredients;
     }
 
-    public String getPreparations() {
-        return preparations;
+    public String getPreparationMethod() {
+        return preparationMethod;
     }
 
-    public void setPreparations(String preparations) {
-        this.preparations = preparations;
+    public void setPreparationMethod(String preparationMethod) {
+        this.preparationMethod = preparationMethod;
     }
 }
 

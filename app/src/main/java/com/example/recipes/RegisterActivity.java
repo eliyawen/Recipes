@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -27,7 +28,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private EditText etRegisterEmailadress, etRegisterpassword, etRegisterConfirmpassword;
     private Button btnsignup;
     private FirebaseAuth firebaseAuth;
-    private DatabaseReference databaseReference;
+    private DatabaseReference databaseReference, databaseReferenceCategories;
     private FirebaseDatabase firebaseDatabase;
     private TextView regTv;
 
@@ -43,10 +44,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         btnsignup.setOnClickListener(this);
         regTv=findViewById(R.id.regTv);
 
+        btnsignup.setBackgroundColor(Color.BLUE);
+
         firebaseAuth = FirebaseAuth.getInstance();
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("Users");
+        databaseReferenceCategories = firebaseDatabase.getReference("PublicCategories");
 
 
     }
@@ -80,14 +84,16 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
-                    //sign in successfuly
-                    ArrayList<Recipe> arr = new ArrayList<Recipe>();
-                    User user = new User(arr,etRegisterpassword.getText().toString());
+                if(task.isSuccessful()){//sign in successfuly
+                    //adding user to the database
+                    User user = new User(etRegisterpassword.getText().toString());
                     databaseReference.child(firebaseAuth.getCurrentUser().getUid()).setValue(user);
+                    //adding unique category to the user(for "myCategory")
+                    Category category = new Category(firebaseAuth.getCurrentUser().getUid());
+                    databaseReferenceCategories.child(firebaseAuth.getCurrentUser().getUid()).setValue(category);
+
                     Intent intent = new Intent(RegisterActivity.this, HomapageActivity.class);
                     startActivity(intent);
-
                 } else{
                     //sign in faild
                     regTv.setText("registration fails");

@@ -64,68 +64,14 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             >
-            <EditText
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginLeft="100dp"
-                android:hint="כמות"
-                android:paddingLeft="80dp"
-                />
 
-            <EditText
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginLeft="50dp"
-                android:paddingLeft="80dp"
-                android:hint="מצרך"
-                />
-        </TableRow>
-        <TableRow
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            >
-            <EditText
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginLeft="100dp"
-                android:hint="כמות"
-                android:paddingLeft="80dp"
-                />
-
-            <EditText
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginLeft="50dp"
-                android:paddingLeft="80dp"
-                android:hint="מצרך"
-                />
-        </TableRow>
-        <TableRow
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            >
-            <EditText
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginLeft="100dp"
-                android:hint="כמות"
-                android:paddingLeft="80dp"
-                />
-
-            <EditText
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginLeft="50dp"
-                android:paddingLeft="80dp"
-                android:hint="מצרך"
-                />
         </TableRow>
 
     </TableLayout>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="הוסף שורה"
+        android:text="הוסף שורה של מצרכים"
         android:id="@+id/btn_add_ingredients_row"
         />
 
