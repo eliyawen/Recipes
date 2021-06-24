@@ -30,9 +30,9 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="זמן הכנה (בדקות)"
+        android:hint="זמן הכנה"
         android:layout_gravity="center"
-        android:paddingLeft="50dp"
+        android:paddingLeft="115dp"
         android:id="@+id/preparation_time"
         />
 
@@ -54,26 +54,16 @@
         android:layout_height="wrap_content"
         android:id="@+id/category_spinner"/>
 
-    //ingredients list
-    <TableLayout
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:id="@+id/table_layout_ingredients"
-        >
-        <TableRow
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            >
-
-        </TableRow>
-
-    </TableLayout>
-    <Button
+    <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="הוסף שורה של מצרכים"
-        android:id="@+id/btn_add_ingredients_row"
+        android:layout_gravity="center"
+        android:paddingBottom="50dp"
+        android:paddingLeft="180dp"
+        android:hint="מצרכים"
+        android:id="@+id/et_ingredients"
         />
+
 
     <EditText
         android:layout_width="wrap_content"
@@ -88,6 +78,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="left"
         android:text="הוסף תמונה"
         android:id="@+id/btn_add_image"
         />
@@ -96,7 +87,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="הוסף מתכון"
-        android:layout_marginLeft="150dp"
+        android:layout_gravity="center"
         android:id="@+id/btn_add_dialog"
         />
 

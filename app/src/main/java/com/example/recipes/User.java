@@ -10,18 +10,7 @@ public class User {
 
     public User(String password) {
         this.password = password;
-        //this.RecipesList = new ArrayList<Recipe>();
-        //Recipe r = new Recipe("temp");
-        //this.RecipesList.add(r);
     }
-
-    //public ArrayList<Recipe> getRecipesList() {
-      //  return RecipesList;
-    //}
-
-    //public void setRecipesList(ArrayList<Recipe> recipesList) {
-       // RecipesList = recipesList;
-    //}
 
     public String getPassword() {
         return password;

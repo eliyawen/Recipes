@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -57,7 +58,9 @@ public class RecipespageActivity extends AppCompatActivity implements AdapterVie
         recipes = new ArrayList<Recipe>();
         recipesNamesList = new ArrayList<String>();
 
-        databaseReferenceCategories.addListenerForSingleValueEvent(new ValueEventListener() {
+
+        //for the custom layout
+        databaseReferenceCategories.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot d : snapshot.getChildren()) {
@@ -65,20 +68,21 @@ public class RecipespageActivity extends AppCompatActivity implements AdapterVie
                         recipes = d.getValue(Category.class).getRecipes();
                         setTitle(categoryName);
                     }
-                    if (d.getValue(Category.class).getCategoryName().equals(firebaseAuth.getCurrentUser().getUid())){
-                        recipes = d.getValue(Category.class).getRecipes();
+                    if(categoryName.length()>20){
                         setTitle("המתכונים שלי");
-                        categoryName = firebaseAuth.getCurrentUser().getUid();
                     }
                 }
                 productsAdapter = new ProductsAdapter(RecipespageActivity.this,0,0,recipes);
                 lv.setAdapter(productsAdapter);
 
+
+                //for the search view
                 for (int i = 0;i<recipes.size();i++){
-                    recipesNamesList.add(recipes.get(i).getRecipeName());
+                    int temp = i;
+                    recipesNamesList.add(recipes.get(temp).getRecipeName());
                 }
 
-                adapter = new ArrayAdapter<String >(RecipespageActivity.this, android.R.layout.simple_expandable_list_item_1, recipesNamesList);
+                adapter = new ArrayAdapter<String>(RecipespageActivity.this, android.R.layout.simple_expandable_list_item_1, recipesNamesList);
                 lv.setAdapter(adapter);
 
                 searchView = findViewById(R.id.search_view);
@@ -86,6 +90,13 @@ public class RecipespageActivity extends AppCompatActivity implements AdapterVie
                 searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
                     public boolean onQueryTextSubmit(String query) {
+                        searchView.clearFocus();
+                        if (recipesNamesList.contains(query)){
+                            adapter.getFilter().filter(query);
+                            Toast.makeText(getApplicationContext(),"item found",Toast.LENGTH_LONG).show();
+                        }else {
+                            Toast.makeText(getApplicationContext(),"item not found",Toast.LENGTH_LONG).show();
+                        }
                         return false;
                     }
 

@@ -14,7 +14,7 @@ public class Category {
     public Category(String categoryName) {
         this.categoryName = categoryName;
         this.recipes = new ArrayList<Recipe>();
-        Recipe r = new Recipe("temp","1624369854167.jpg");
+        Recipe r = new Recipe("temp","1",1,"1624369854167.jpg","none","none");
         this.recipes.add(r);
     }
 

@@ -34,6 +34,7 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -57,18 +58,13 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
 
      ActionBar actionBar;
     private Dialog d;
-    private EditText editTextRecipeName, editTextPreparationTime, editTextPreparation, editTextCategoryNameDialog;
+    private EditText editTextRecipeName, editTextPreparationTime, editTextPreparation, editTextCategoryNameDialog, editTextIngredients;
     private Button btnAddDialog, btnAddCategoryDialog;
     private LinearLayout linearLayout;
-    private ListView ingredientsListView;
-    private Button btnAddIngredientsRow, btnAddImage;
-    private TableLayout tableLayoutIngredients;
-    private LinearLayout bigLlDialog, smallLlDialog;
-    private ScrollView scrollViewDialog;
+    private Button  btnAddImage;
     private ArrayList<Button> buttons;
-
     private FirebaseDatabase firebaseDatabase;
-    private DatabaseReference databaseReferenceUsers, databaseReferenceCategories, databaseReferenceCategoriesNames;
+    private DatabaseReference databaseReferenceUsers, databaseReferenceCategories;
     private StorageReference storageReference;
     private FirebaseAuth firebaseAuth;
     private User user;
@@ -80,7 +76,6 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
     private String imageString;
     private NumberPicker numberPicker;
     private String key;
-    private int keyCounter, valueCounter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,9 +83,7 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_homapage);
         linearLayout=findViewById(R.id.linearLayout);
 
-        keyCounter = 1;
-        valueCounter = 2;
-
+        setTitle("MatcoNet");
 
         buttons= new ArrayList<Button>();
 
@@ -126,26 +119,17 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
             startActivityForResult(Intent.createChooser(i,"Choose Picture"),0);
         }
 
-        if(v == btnAddIngredientsRow) addIngredientsRowFunction();
 
         if(v == btnAddDialog){
             //uploadTheImageToStorage
-            //upload();
+            upload();
             //adding recipe to the category
             String recipeName = editTextRecipeName.getText().toString();
             String prepTime = editTextPreparationTime.getText().toString();
             int dif = numberPicker.getValue();
-            //ingredients
-            Map<String ,String> ingredients = new HashMap<String ,String>();
-            for (int i = 1;i<=valueCounter;i+=2){
-              EditText etKey = d.findViewById(i);
-              EditText etValue = d.findViewById(i+1);
-              ingredients.put(etKey.toString(),etValue.toString());
-            }
+            String ingredients = editTextIngredients.getText().toString();
             String prep = editTextPreparation.getText().toString();
-            imageString = "1624369854167.jpg";
             r = new Recipe(recipeName,prepTime,dif,imageString,ingredients,prep);
-            //r = new Recipe(recipeName,key);
             categoryName = categorySpinner.getSelectedItem().toString();
             addRecipeToCategory();
             d.dismiss();
@@ -183,6 +167,7 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
                         imageString = taskSnapshot.getUploadSessionUri().toString();
                     }
                 });
+        Toast.makeText(getApplicationContext(),"התמונ נוספה בהצלחה",Toast.LENGTH_LONG).show();
     }
 
     public String getFileExtension(Uri uri){
@@ -278,7 +263,8 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
         if(id == R.id.my_recipes){
             //show all user recipes
             Intent intent = new Intent(this,RecipespageActivity.class);
-            intent.putExtra("category", "myRecipes");
+            String str = firebaseAuth.getCurrentUser().getUid();
+            intent.putExtra("category", str);
             startActivity(intent);
         }
         if(id == R.id.add_recipe){
@@ -303,10 +289,7 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
         d= new Dialog(this);
         d.setContentView(R.layout.add_recipe_dialog);
         d.setCancelable(true);
-        tableLayoutIngredients = d.findViewById(R.id.table_layout_ingredients);
-        bigLlDialog = d.findViewById(R.id.big_linear_layout_dialog);
-        scrollViewDialog = d.findViewById(R.id.scroll_view_dialog);
-        smallLlDialog = d.findViewById(R.id.small_linear_layout_dialog);
+        editTextIngredients = d.findViewById(R.id.et_ingredients);
         d.setTitle("הוספת מתכון");
         editTextRecipeName = d.findViewById(R.id.recipe_name);
         editTextPreparationTime = d.findViewById(R.id.preparation_time);
@@ -316,21 +299,6 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
 
         categorySpinner = d.findViewById(R.id.category_spinner);
         categoryNameList = new ArrayList<String>();
-
-
-        //databaseReferenceUsers.child(firebaseAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
-          //  @Override
-           // public void onDataChange(@NonNull DataSnapshot snapshot) {
-             //   User user = snapshot.getValue(User.class);
-               // user.setPassword("123456");
-                //databaseReferenceUsers.child(firebaseAuth.getCurrentUser().getUid()).setValue(user);
-            //}
-
-            //@Override
-            //public void onCancelled(@NonNull DatabaseError error) {
-
-            //}
-        //});
 
         
         databaseReferenceCategories.addValueEventListener(new ValueEventListener() {
@@ -355,50 +323,16 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
             }
         });
 
-        btnAddIngredientsRow=d.findViewById(R.id.btn_add_ingredients_row);
-        btnAddIngredientsRow.setOnClickListener(this);
         editTextPreparation = d.findViewById(R.id.preparation_method);
         btnAddImage = d.findViewById(R.id.btn_add_image);
         btnAddImage.setOnClickListener(this);
+        btnAddImage.setBackgroundColor(Color.BLUE);
         btnAddDialog = d.findViewById(R.id.btn_add_dialog);
         btnAddDialog.setOnClickListener(this);
+        btnAddDialog.setBackgroundColor(Color.BLUE);
         d.show();
     }
 
-    //add ingredients row in dialog
-    public void  addIngredientsRowFunction(){
-
-        TableRow tr = new TableRow(this);
-        TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,TableRow.LayoutParams.WRAP_CONTENT);
-        EditText etItem = new EditText(this);
-        etItem.setHint("מצרך");
-        etItem.setPadding(80,0,0,0);
-        lp.setMargins(50,0,0,0);
-        etItem.generateViewId();
-        etItem.setId(keyCounter);
-        etItem.setLayoutParams(lp);
-
-        EditText etAmount = new EditText(this);
-        etAmount.setHint("כמות");
-        etAmount.setPadding(80,0,0,0);
-        lp.setMargins(100,0,0,0);
-        etAmount.generateViewId();
-        etAmount.setId(valueCounter);
-        etAmount.setLayoutParams(lp);
-        tr.addView(etAmount);
-        tr.addView(etItem);
-        tableLayoutIngredients.addView(tr);
-        smallLlDialog.removeView(tableLayoutIngredients);
-        smallLlDialog.addView(tableLayoutIngredients,5);
-        scrollViewDialog.removeAllViews();
-        scrollViewDialog.addView(smallLlDialog);
-        bigLlDialog.removeAllViews();
-        bigLlDialog.addView(scrollViewDialog);
-
-        keyCounter+=2;
-        valueCounter+=2;
-
-    }
 
     //add category dialog
     public void addCategoryDialog(){
@@ -409,6 +343,7 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
         editTextCategoryNameDialog.setTextDirection(View.TEXT_DIRECTION_ANY_RTL);
         btnAddCategoryDialog = d.findViewById(R.id.btn_add_category_dialog);
         btnAddCategoryDialog.setOnClickListener(this);
+        btnAddCategoryDialog.setBackgroundColor(Color.BLUE);
         d.show();
     }
 
