@@ -36,6 +36,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("MatcoNet");
         setContentView(R.layout.activity_register);
         etRegisterEmailadress=findViewById(R.id.etRegisterEmailadress);
         etRegisterpassword=findViewById(R.id.etRegisterpassword);
@@ -81,6 +82,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             return;
         }
 
+        //creating new user on the firebaseAuth
         firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {

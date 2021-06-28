@@ -17,6 +17,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.renderscript.Sampler;
 import android.util.Log;
 import android.view.Menu;
@@ -35,6 +36,7 @@ import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -56,26 +58,21 @@ import java.util.Map;
 
 public class HomapageActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
-     ActionBar actionBar;
     private Dialog d;
     private EditText editTextRecipeName, editTextPreparationTime, editTextPreparation, editTextCategoryNameDialog, editTextIngredients;
-    private Button btnAddDialog, btnAddCategoryDialog;
+    private Button btnAddDialog, btnAddCategoryDialog, btnAddImage;
     private LinearLayout linearLayout;
-    private Button  btnAddImage;
     private ArrayList<Button> buttons;
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReferenceUsers, databaseReferenceCategories;
     private StorageReference storageReference;
     private FirebaseAuth firebaseAuth;
-    private User user;
     private ArrayList<String> categoryNameList;
     private Spinner categorySpinner;
     private Recipe r;
-    private String categoryName;
+    private String categoryName, key, imageString;
     private Uri imageUri;
-    private String imageString;
     private NumberPicker numberPicker;
-    private String key;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +104,8 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1000);
         }
+
+        //everytime that the app open, we adding all the categories that we have currently on the dataBase
         createCategoryButtons();
     }
 
@@ -114,30 +113,44 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
 
         if(v == btnAddImage){
-            Intent i =new Intent(Intent.ACTION_GET_CONTENT);
-            i.setType("image/*");
+            Intent i =new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            //i.setType("image/*");
             startActivityForResult(Intent.createChooser(i,"Choose Picture"),0);
+
         }
 
 
         if(v == btnAddDialog){
-            //uploadTheImageToStorage
-            upload();
-            //adding recipe to the category
-            String recipeName = editTextRecipeName.getText().toString();
-            String prepTime = editTextPreparationTime.getText().toString();
-            int dif = numberPicker.getValue();
-            String ingredients = editTextIngredients.getText().toString();
-            String prep = editTextPreparation.getText().toString();
-            r = new Recipe(recipeName,prepTime,dif,imageString,ingredients,prep);
-            categoryName = categorySpinner.getSelectedItem().toString();
-            addRecipeToCategory();
-            d.dismiss();
+            //checking if all the EditTexts were filled
+            if (editTextRecipeName.getText() == null || editTextPreparationTime.getText() == null || editTextIngredients.getText() == null || editTextPreparation.getText() == null){
+                Toast.makeText(getApplicationContext(),"אתה חייב למלא את כל השדות",Toast.LENGTH_LONG).show();
+            }
+            else{
+                //uploadTheImageToStorage
+                upload();
+                //adding recipe to the category
+                String recipeName = editTextRecipeName.getText().toString();
+                String prepTime = editTextPreparationTime.getText().toString();
+                int dif = numberPicker.getValue();
+                String ingredients = editTextIngredients.getText().toString();
+                String prep = editTextPreparation.getText().toString();
+                //imageString = "1624369854167.jpg";
+                r = new Recipe(recipeName,prepTime,dif,imageString,ingredients,prep);
+                categoryName = categorySpinner.getSelectedItem().toString();
+                addRecipeToCategory();
+                d.dismiss();
+            }
         }
 
+        //adding new category
         if(v == btnAddCategoryDialog){
-            addCategoryButton(editTextCategoryNameDialog.getText().toString());
-            d.dismiss();
+            if(editTextCategoryNameDialog.getText().length() > 20){//for not confusing afterwards between regular category and 'meRecipes'
+                Toast.makeText(getApplicationContext(),"שם הקטגוריה לא יכול להכיל יותר מ-20 תווים",Toast.LENGTH_LONG).show();
+            }
+            else {
+                addCategoryButton(editTextCategoryNameDialog.getText().toString());
+                d.dismiss();
+            }
         }
         else{
             Intent intent = new Intent(this, RecipespageActivity.class);
@@ -167,15 +180,16 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
                         imageString = taskSnapshot.getUploadSessionUri().toString();
                     }
                 });
-        Toast.makeText(getApplicationContext(),"התמונ נוספה בהצלחה",Toast.LENGTH_LONG).show();
     }
 
+    //adding the right extension to the image
     public String getFileExtension(Uri uri){
         String cr = getContentResolver().getType(uri);
         MimeTypeMap mtm = MimeTypeMap.getSingleton();
         return mtm.getExtensionFromMimeType(cr);
     }
 
+    //when adding the recipe to the category un the dialog
     public void addRecipeToCategory(){
         databaseReferenceCategories.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -197,7 +211,9 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
         });
     }
 
+
     public void createCategoryButtons(){
+        //making arraylist with all the categories from the database
         categoryNameList = new ArrayList<String>();
         databaseReferenceCategories.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -300,7 +316,7 @@ public class HomapageActivity extends AppCompatActivity implements View.OnClickL
         categorySpinner = d.findViewById(R.id.category_spinner);
         categoryNameList = new ArrayList<String>();
 
-        
+        //getting all the categories from the database, so the user could choose with category he want to add the recipe to
         databaseReferenceCategories.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

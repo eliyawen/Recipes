@@ -33,7 +33,6 @@ public class RecipespageActivity extends AppCompatActivity implements AdapterVie
     SearchView searchView;
     ArrayList<String> recipesNamesList;
     ArrayAdapter<String> adapter;
-
     FirebaseDatabase firebaseDatabase;
     StorageReference storageReference;
     DatabaseReference databaseReferenceCategories, databaseReferenceUsers;
@@ -52,6 +51,7 @@ public class RecipespageActivity extends AppCompatActivity implements AdapterVie
         setContentView(R.layout.activity_recipespage);
         lv=findViewById(R.id.recipes_list_view);
 
+        //getting the name of the chosen category
         Intent intent = getIntent();
         categoryName = intent.getExtras().getString("category");
 
@@ -59,7 +59,7 @@ public class RecipespageActivity extends AppCompatActivity implements AdapterVie
         recipesNamesList = new ArrayList<String>();
 
 
-        //for the custom layout
+        //for the custom layout(that filing the listView)
         databaseReferenceCategories.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -68,44 +68,15 @@ public class RecipespageActivity extends AppCompatActivity implements AdapterVie
                         recipes = d.getValue(Category.class).getRecipes();
                         setTitle(categoryName);
                     }
-                    if(categoryName.length()>20){
+                    if(categoryName.length()>20){//for not confusing between regular category and 'meRecipes'
                         setTitle("המתכונים שלי");
                     }
                 }
+                if(recipes.size()>1){
+                    recipes.remove(0);
+                }
                 productsAdapter = new ProductsAdapter(RecipespageActivity.this,0,0,recipes);
                 lv.setAdapter(productsAdapter);
-
-
-                //for the search view
-                for (int i = 0;i<recipes.size();i++){
-                    int temp = i;
-                    recipesNamesList.add(recipes.get(temp).getRecipeName());
-                }
-
-                adapter = new ArrayAdapter<String>(RecipespageActivity.this, android.R.layout.simple_expandable_list_item_1, recipesNamesList);
-                lv.setAdapter(adapter);
-
-                searchView = findViewById(R.id.search_view);
-
-                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                    @Override
-                    public boolean onQueryTextSubmit(String query) {
-                        searchView.clearFocus();
-                        if (recipesNamesList.contains(query)){
-                            adapter.getFilter().filter(query);
-                            Toast.makeText(getApplicationContext(),"item found",Toast.LENGTH_LONG).show();
-                        }else {
-                            Toast.makeText(getApplicationContext(),"item not found",Toast.LENGTH_LONG).show();
-                        }
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onQueryTextChange(String newText) {
-                        adapter.getFilter().filter(newText);
-                        return false;
-                    }
-                });
 
             }
 
@@ -114,11 +85,6 @@ public class RecipespageActivity extends AppCompatActivity implements AdapterVie
 
             }
         });
-
-
-
-
-        lv.setOnItemClickListener(this);
 
         }
 

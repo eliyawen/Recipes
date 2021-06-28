@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("MatcoNet");
         setContentView(R.layout.activity_main);
         etEmailLogin=findViewById(R.id.etEmailLogin);
         etPasswordLogin=findViewById(R.id.etPasswordLogin);
@@ -48,7 +49,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         if(btnsignin == v){
-            login();
+            if(etPasswordLogin.getText().toString().length() == 0 || etEmailLogin.getText().toString().length() == 0){
+                tvLogin.setText("You must write Email and password");
+            }
+            else {
+                login();
+            }
         }
 
         if(btnsignup == v){
@@ -62,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String email = etEmailLogin.getText().toString().trim();
         String password = etPasswordLogin.getText().toString().trim();
 
+        //checking with the firebaseAuth if the Email and the password are correct
         firebaseAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {

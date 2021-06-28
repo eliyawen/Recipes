@@ -2,12 +2,14 @@ package com.example.recipes;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -34,6 +36,7 @@ public class ProductsAdapter extends ArrayAdapter<Recipe> {
     }
 
 
+    //filing everytime the custom layout with getView. connecting between the arraylist and the listView
     public View getView(int position, View convertView, ViewGroup parent){
         storageReference = FirebaseStorage.getInstance().getReference("Images");
         Recipe recipe = getItem(position);
@@ -52,6 +55,7 @@ public class ProductsAdapter extends ArrayAdapter<Recipe> {
             @Override
             public void onSuccess(Uri uri) {
                 Glide.with(context).load(uri).into(recipeImage);
+                Log.d("msg", "image loaded");
             }
         });
 

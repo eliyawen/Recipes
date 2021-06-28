@@ -34,7 +34,6 @@ import java.util.Map;
 public class RecipeViewActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextView recipeNameTv, difficultyTv, timeTv, preparationMethodTv, ingredientsTv;
-    private TableLayout tableLayout;
     private ImageView recipeImageTv;
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReferenceCategories;
@@ -66,8 +65,9 @@ public class RecipeViewActivity extends AppCompatActivity implements View.OnClic
 
         Intent intent= getIntent();
         recipeName = intent.getExtras().getString("recipeName");
-        categoryName = intent.getExtras().getString("categoryName");
+        categoryName = intent.getExtras().getString("recipeName");
 
+        //getting the wanted recipe from the database, using the exactly recipeName and recipeName that we got on the intent
         databaseReferenceCategories.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -116,6 +116,7 @@ public class RecipeViewActivity extends AppCompatActivity implements View.OnClic
             databaseReferenceCategories.child(firebaseAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    //when the user wants to add the recipe to his own recipes
                     Category category = snapshot.getValue(Category.class);
                     category.addRecipe(r);
                     databaseReferenceCategories.child(firebaseAuth.getCurrentUser().getUid()).setValue(category);
